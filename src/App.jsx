@@ -9,11 +9,10 @@ import AdminDashboard from './pages/AdminDashboard';
 import PriceTrends from './pages/PriceTrends';
 import Subscriptions from './pages/Subscriptions';
 import ProtectedRoute from './components/ProtectedRoute';
-import { useAuth } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 
 function AppContent() {
-  const auth = useAuth();
-  const { user } = auth || {};
+  const { user, loading } = useAuth();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50">
@@ -84,9 +83,12 @@ function AppContent() {
 function App() {
   return (
     <Router>
-      <AppContent />
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </Router>
   );
 }
 
 export default App;
+

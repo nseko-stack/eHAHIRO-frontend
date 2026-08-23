@@ -1,111 +1,136 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
-import { User, Store, Settings } from 'lucide-react';
+import { UserPlus, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 
 export default function Register() {
   const [formData, setFormData] = useState({
     name: '',
-    phone: '+250788',
+    phone: '+250',
     role: 'farmer',
     location: ''
   });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const { register } = useAuth();
   const navigate = useNavigate();
 
-const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setSuccess('');
+
+    const cleanName = formData.name.trim();
+    const cleanPhone = formData.phone.trim();
+
+    if (!cleanName) {
+      setError('Please provide your full name');
+      return;
+    }
+    if (!cleanPhone || cleanPhone === '+250') {
+      setError('Please enter a valid phone number');
+      return;
+    }
+
     setLoading(true);
 
     try {
-      await register(formData);
-      // Replace with your toast library (e.g., react-toastify)
-      if (typeof window.showToast === 'function') {
-        window.showToast('✅ Account created! Welcome to Agri-Price Tracker', 'success');
-      } else {
-        alert('✅ Account created! Welcome to Agri-Price Tracker');
-      }
-      navigate('/');
-    } catch (error) {
-      console.error('Registration error:', error);
-      alert('❌ Registration failed: ' + (error.response?.data?.error || error.message));
+      await register({
+        ...formData,
+        name: cleanName,
+        phone: cleanPhone
+      });
+      setSuccess('Account created successfully! Redirecting...');
+      setTimeout(() => {
+        navigate('/');
+      }, 1000);
+    } catch (err) {
+      console.error('Registration error:', err);
+      setError(err.response?.data?.error || err.response?.data?.message || 'Registration failed. Please check your details.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4">
-      <div className="max-w-lg w-full bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-emerald-200">
-        <div className="text-center mb-10">
-          <div className="mx-auto w-24 h-24 bg-gradient-to-br from-emerald-400 to-green-500 rounded-3xl flex items-center justify-center mb-6 shadow-2xl">
-            <svg className="w-14 h-14 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+    <div className="min-h-[85vh] flex items-center justify-center py-12 px-4">
+      <div className="max-w-lg w-full bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-8 sm:p-10 border border-emerald-100">
+        <div className="text-center mb-8">
+          <div className="mx-auto w-20 h-20 bg-gradient-to-br from-emerald-500 to-green-600 rounded-3xl flex items-center justify-center mb-5 shadow-lg">
+            <UserPlus size={36} className="text-white" />
           </div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Join Agri-Price</h2>
-          <p className="text-gray-600">Create your free account</p>
+          <h2 className="text-3xl font-extrabold text-gray-900 mb-2">Join AgriPrice</h2>
+          <p className="text-gray-600 text-sm">Create your account to track crop prices and receive instant SMS alerts</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        {error && (
+          <div className="mb-6 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-sm flex items-start space-x-2.5">
+            <AlertCircle size={18} className="text-red-500 flex-shrink-0 mt-0.5" />
+            <span>{error}</span>
+          </div>
+        )}
+
+        {success && (
+          <div className="mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-start space-x-2.5">
+            <CheckCircle size={18} className="text-emerald-600 flex-shrink-0 mt-0.5" />
+            <span>{success}</span>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-5">
           {/* Full Name */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-3">Full Name</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
             <input
               type="text"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full px-5 py-4 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-emerald-200 focus:border-emerald-500 transition-all shadow-sm text-lg"
-              placeholder="Enter your name"
+              className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 transition-all font-medium text-base"
+              placeholder="e.g. Jean Damascene"
               required
             />
           </div>
 
           {/* Phone Number */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-3">Phone Number</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center">
-                <svg className="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.95.69l1.5 4.49a1 1 0 01-.5 1.21l-2.26 1.13a11.05 11.05 0 005.52 5.52l1.13-2.26a1 1 0 011.21-.5l4.49 1.5a1 1 0 01.69.95V19a2 2 0 01-2 2h-2a16 16 0 01-14-14V5z" />
-                </svg>
-              </div>
-              <input
-                type="tel"
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="w-full pl-14 pr-5 py-4 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-emerald-200 focus:border-emerald-500 transition-all shadow-sm text-lg"
-                placeholder="788 123 456"
-                required
-              />
-            </div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Phone Number</label>
+            <input
+              type="tel"
+              value={formData.phone}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 transition-all font-medium text-base"
+              placeholder="+250 788 123 456"
+              required
+            />
+            <p className="mt-1 text-xs text-gray-500">Used for SMS price alerts and login</p>
           </div>
 
           {/* Role */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-3">Role</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Account Role</label>
             <select
               value={formData.role}
               onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-              className="w-full px-5 py-4 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-emerald-200 focus:border-emerald-500 transition-all shadow-sm text-lg"
+              className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 transition-all font-medium text-base bg-white"
               required
             >
-              <option value="farmer"><User size={16} className="inline mr-2" />Farmer</option>
-              <option value="agent"><Store size={16} className="inline mr-2" />Market Agent</option>
-              <option value="admin"><Settings size={16} className="inline mr-2" />Admin</option>
+              <option value="farmer">Farmer (Track prices & receive alerts)</option>
+              <option value="agent">Market Agent (Record & submit market prices)</option>
+              <option value="trader">Trader / Buyer</option>
+              <option value="admin">Administrator</option>
             </select>
           </div>
 
           {/* Location */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-3">Location (Optional)</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Location / District (Optional)</label>
             <input
               type="text"
               value={formData.location}
               onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-              className="w-full px-5 py-4 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-emerald-200 focus:border-emerald-500 transition-all shadow-sm text-lg"
-              placeholder="Gasabo, Kigali"
+              className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 transition-all font-medium text-base"
+              placeholder="e.g. Gasabo, Kigali or Muhanga"
             />
           </div>
 
@@ -113,15 +138,12 @@ const handleSubmit = async (e) => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full btn-primary py-5 text-xl font-bold shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-4 px-6 bg-gradient-to-r from-emerald-600 to-green-600 text-white rounded-2xl text-base font-bold shadow-lg hover:shadow-xl hover:from-emerald-700 hover:to-green-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
           >
             {loading ? (
               <>
-                <svg className="animate-spin -ml-1 mr-3 h-6 w-6 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.37 0 0 5.37 0 12h4zm2 5.29A7.96 7.96 0 014 12H0c0 3.04 1.14 5.82 3 7.94l3-2.65z"></path>
-                </svg>
-                Creating Account...
+                <Loader2 size={20} className="animate-spin mr-2" />
+                <span>Creating Account...</span>
               </>
             ) : (
               'Create My Account'
@@ -129,7 +151,7 @@ const handleSubmit = async (e) => {
           </button>
         </form>
 
-        <div className="text-center pt-8 border-t border-gray-200">
+        <div className="text-center pt-6 mt-6 border-t border-gray-100">
           <p className="text-sm text-gray-600">
             Already registered?{' '}
             <Link to="/login" className="font-bold text-emerald-600 hover:text-emerald-700">
@@ -140,4 +162,4 @@ const handleSubmit = async (e) => {
       </div>
     </div>
   );
-}
+}

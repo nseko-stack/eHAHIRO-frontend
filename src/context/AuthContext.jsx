@@ -2,21 +2,36 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { api } from '../services/api';
 import { initSocket, disconnectSocket } from '../services/socket';
 
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  return context || {};
+};
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      api.defaults.headers.Authorization = `Bearer ${token}`;
-      setUser(JSON.parse(localStorage.getItem('user') || '{}'));
+    try {
+      const token = localStorage.getItem('token');
+      const savedUser = localStorage.getItem('user');
+      if (token && savedUser) {
+        const parsed = JSON.parse(savedUser);
+        if (parsed && typeof parsed === 'object' && Object.keys(parsed).length > 0) {
+          setUser(parsed);
+          api.defaults.headers.Authorization = `Bearer ${token}`;
+          initSocket(parsed);
+        }
+      }
+    } catch (e) {
+      console.warn('Error reading saved user session:', e);
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   const login = async (phone) => {
@@ -55,4 +70,4 @@ export const AuthProvider = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
-};
+};

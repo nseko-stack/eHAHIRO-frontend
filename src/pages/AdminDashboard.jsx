@@ -57,20 +57,21 @@ export default function AdminDashboard() {
   const fetchUsers = async () => {
     try {
       const { data } = await api.get('/users');
-      setUsers(data);
+      setUsers(Array.isArray(data) ? data : data?.users || mockUsers);
     } catch (error) {
-      console.error('Error fetching users:', error);
-      setUsers(mockUsers); // Fallback to mock
+      console.warn('Error fetching users, using mock data:', error.message);
+      setUsers(mockUsers);
     }
   };
 
   const fetchStats = async () => {
     try {
       const { data } = await api.get('/users/stats');
-      setStats(data);
+      if (data && typeof data === 'object') {
+        setStats(data);
+      }
     } catch (error) {
-      console.error('Error fetching stats:', error);
-      // Keep mock stats
+      console.warn('Error fetching stats:', error.message);
     } finally {
       setLoading(false);
     }
@@ -79,7 +80,7 @@ export default function AdminDashboard() {
   const fetchCrops = async () => {
     try {
       const { data } = await api.get('/crops');
-      setCrops(data);
+      setCrops(Array.isArray(data) ? data : data?.crops || []);
     } catch (error) {
       console.error('Error fetching crops:', error);
     }
@@ -88,7 +89,7 @@ export default function AdminDashboard() {
   const fetchMarkets = async () => {
     try {
       const { data } = await api.get('/markets');
-      setMarkets(data);
+      setMarkets(Array.isArray(data) ? data : data?.markets || []);
     } catch (error) {
       console.error('Error fetching markets:', error);
     }
@@ -97,7 +98,7 @@ export default function AdminDashboard() {
   const fetchPrices = async () => {
     try {
       const { data } = await api.get('/prices');
-      setPrices(data);
+      setPrices(Array.isArray(data) ? data : data?.prices || []);
     } catch (error) {
       console.error('Error fetching prices:', error);
     }
@@ -106,18 +107,26 @@ export default function AdminDashboard() {
   const fetchNotifications = async () => {
     try {
       const { data } = await api.get('/notifications/admin/all');
-      setNotifications(data.notifications);
+      if (Array.isArray(data)) {
+        setNotifications(data);
+      } else if (data && Array.isArray(data.notifications)) {
+        setNotifications(data.notifications);
+      } else {
+        setNotifications([]);
+      }
     } catch (error) {
       console.error('Error fetching notifications:', error);
+      setNotifications([]);
     }
   };
 
   const fetchRecentActivity = async () => {
     try {
       const { data } = await api.get('/users/activity');
-      setRecentActivity(data);
+      setRecentActivity(Array.isArray(data) ? data : data?.activity || []);
     } catch (error) {
       console.error('Error fetching recent activity:', error);
+      setRecentActivity([]);
     }
   };
 
@@ -720,19 +729,19 @@ export default function AdminDashboard() {
                 <tbody>
                   {prices
                     .filter(price => {
-                      const cropName = crops.find(c => c.id === price.crop_id)?.name || '';
-                      const marketName = markets.find(m => m.id === price.market_id)?.name || '';
+                      const cropName = crops.find(c => String(c.id) === String(price.crop_id))?.name || price.crop_name || '';
+                      const marketName = markets.find(m => String(m.id) === String(price.market_id))?.name || price.market_name || '';
                       const searchLower = priceSearchTerm.toLowerCase();
                       return cropName.toLowerCase().includes(searchLower) ||
                              marketName.toLowerCase().includes(searchLower);
                     })
                     .map(price => (
                       <tr key={price.id} className="border-t">
-                        <td className="p-4">{crops.find(c => c.id === price.crop_id)?.name || 'Unknown'}</td>
-                        <td className="p-4">{markets.find(m => m.id === price.market_id)?.name || 'Unknown'}</td>
-                        <td className="p-4 font-semibold">{price.price}</td>
-                        <td className="p-4">{users.find(u => u.id === price.agent_id)?.name || 'Unknown'}</td>
-                        <td className="p-4">{new Date(price.date).toLocaleDateString()}</td>
+                        <td className="p-4 font-medium">{crops.find(c => String(c.id) === String(price.crop_id))?.name || price.crop_name || 'Crop'}</td>
+                        <td className="p-4">{markets.find(m => String(m.id) === String(price.market_id))?.name || price.market_name || 'Market'}</td>
+                        <td className="p-4 font-bold text-emerald-700">RWF {Number(price.price).toLocaleString()}</td>
+                        <td className="p-4">{users.find(u => String(u.id) === String(price.agent_id))?.name || price.agent_name || 'Agent'}</td>
+                        <td className="p-4">{price.date ? new Date(price.date).toLocaleDateString() : 'Today'}</td>
                         <td className="p-4">
                           <button
                             onClick={() => handleEditPrice(price)}

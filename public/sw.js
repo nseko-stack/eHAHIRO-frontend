@@ -1,11 +1,11 @@
-const CACHE_NAME = 'agriprice-v1';
+const CACHE_NAME = 'agriprice-v2';
 const urlsToCache = [
   '/',
-  '/static/js/bundle.js',
-  '/static/css/main.css',
   '/manifest.json',
   '/logo192.png',
-  '/logo512.png'
+  '/logo512.png',
+  '/favicon.ico',
+  '/eHAHIRO-logo.png'
 ];
 
 // Install service worker

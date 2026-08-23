@@ -25,8 +25,8 @@ export default function AgentDashboard() {
           api.get('/markets'),
           api.get('/crops')
         ]);
-        setMarkets(marketsData);
-        setCrops(cropsData);
+        setMarkets(Array.isArray(marketsData) ? marketsData : []);
+        setCrops(Array.isArray(cropsData) ? cropsData : []);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -38,9 +38,10 @@ export default function AgentDashboard() {
   const fetchMyPrices = async () => {
     try {
       const { data } = await api.get('/prices/my-prices');
-      setMyPrices(data);
+      setMyPrices(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Error fetching my prices:', error);
+      setMyPrices([]);
     }
   };
 
@@ -79,7 +80,7 @@ export default function AgentDashboard() {
   };
 
   const handleDeletePrice = async (priceId) => {
-    if (!confirm('Are you sure?')) return;
+    if (!window.confirm('Are you sure you want to delete this price?')) return;
     try {
       await api.delete(`/prices/${priceId}`);
       setMessage('✅ Price deleted successfully!');
@@ -184,7 +185,7 @@ export default function AgentDashboard() {
               <div key={price.id} className="flex items-center justify-between p-4 bg-emerald-50 rounded-xl border-l-4 border-emerald-400">
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 bg-emerald-200 rounded-xl flex items-center justify-center">
-                    <span className="font-bold text-emerald-700 text-lg">{price.crop_name.slice(0,3).toUpperCase()}</span>
+                    <span className="font-bold text-emerald-700 text-lg">{(price.crop_name || 'CRP').slice(0,3).toUpperCase()}</span>
                   </div>
                   <div>
                     <p className="font-semibold text-lg">{price.crop_name} @ {price.market_name}</p>

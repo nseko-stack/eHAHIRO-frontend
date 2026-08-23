@@ -18,19 +18,24 @@ export const requestNotificationPermission = async () => {
 };
 
 export const showNotification = (title, options = {}) => {
-  if (Notification.permission === 'granted') {
-    const notification = new Notification(title, {
-      icon: '/logo192.png',
-      badge: '/logo192.png',
-      ...options
-    });
+  if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+    try {
+      const notification = new Notification(title, {
+        icon: '/logo192.png',
+        badge: '/logo192.png',
+        ...options
+      });
 
-    // Auto-close after 5 seconds
-    setTimeout(() => {
-      notification.close();
-    }, 5000);
+      // Auto-close after 5 seconds
+      setTimeout(() => {
+        notification.close();
+      }, 5000);
 
-    return notification;
+      return notification;
+    } catch (e) {
+      console.warn('Could not display system notification:', e);
+      return null;
+    }
   }
   return null;
 };

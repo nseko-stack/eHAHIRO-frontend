@@ -6,13 +6,18 @@ const socket = io(apiUrl, {
 });
 
 export const initSocket = (user) => {
+  if (!socket.connected) {
+    socket.connect();
+  }
   if (user && user.id) {
     socket.emit('join', user.id);
   }
 };
 
 export const disconnectSocket = () => {
-  socket.disconnect();
+  if (socket.connected) {
+    socket.disconnect();
+  }
 };
 
 export const onPriceUpdate = (callback) => {

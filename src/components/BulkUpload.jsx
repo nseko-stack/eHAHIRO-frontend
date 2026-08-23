@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { api } from '../services/api';
 import { Upload, FileText, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 
@@ -7,16 +7,26 @@ export default function BulkUpload({ onSuccess }) {
   const [uploading, setUploading] = useState(false);
   const [results, setResults] = useState(null);
   const [showResults, setShowResults] = useState(false);
+  const [fileError, setFileError] = useState('');
+  const fileInputRef = useRef(null);
 
   const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile && selectedFile.type === 'text/csv') {
-      setFile(selectedFile);
-      setResults(null);
-      setShowResults(false);
-    } else {
-      alert('Please select a valid CSV file');
-      e.target.value = '';
+    const selectedFile = e.target.files?.[0];
+    setFileError('');
+    if (selectedFile) {
+      const isCsv = selectedFile.name.toLowerCase().endsWith('.csv') ||
+                    selectedFile.type === 'text/csv' ||
+                    selectedFile.type === 'application/vnd.ms-excel' ||
+                    selectedFile.type === 'text/plain';
+      if (isCsv) {
+        setFile(selectedFile);
+        setResults(null);
+        setShowResults(false);
+      } else {
+        setFileError('Please select a valid .csv spreadsheet file');
+        setFile(null);
+        if (fileInputRef.current) fileInputRef.current.value = '';
+      }
     }
   };
 
@@ -25,6 +35,7 @@ export default function BulkUpload({ onSuccess }) {
 
     setUploading(true);
     setResults(null);
+    setFileError('');
 
     try {
       const formData = new FormData();
@@ -45,7 +56,9 @@ export default function BulkUpload({ onSuccess }) {
 
       // Reset file input
       setFile(null);
-      document.getElementById('csvFile').value = '';
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
 
     } catch (error) {
       console.error('Bulk upload error:', error);
@@ -86,14 +99,19 @@ export default function BulkUpload({ onSuccess }) {
           </label>
           <input
             id="csvFile"
+            ref={fileInputRef}
             type="file"
-            accept=".csv"
+            accept=".csv,text/csv,application/vnd.ms-excel"
             onChange={handleFileChange}
             className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
           />
-          <p className="mt-1 text-sm text-gray-500">
-            CSV format: crop_name, market_name, price
-          </p>
+          {fileError ? (
+            <p className="mt-1 text-sm text-red-600 font-medium">{fileError}</p>
+          ) : (
+            <p className="mt-1 text-sm text-gray-500">
+              CSV format: crop_name, market_name, price
+            </p>
+          )}
         </div>
 
         <div className="flex space-x-3">

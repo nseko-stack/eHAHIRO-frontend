@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Bell, Check, CheckCheck } from 'lucide-react';
 import { api } from '../services/api';
 
@@ -7,6 +7,7 @@ export default function NotificationDropdown() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     fetchNotifications();
@@ -15,13 +16,33 @@ export default function NotificationDropdown() {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
   const fetchNotifications = async () => {
     try {
       const { data } = await api.get('/notifications');
-      setNotifications(data.notifications);
-      setUnreadCount(data.unreadCount);
+      if (Array.isArray(data)) {
+        setNotifications(data);
+        setUnreadCount(data.filter(n => !n.is_read).length);
+      } else if (data && typeof data === 'object') {
+        const notifs = Array.isArray(data.notifications) ? data.notifications : [];
+        setNotifications(notifs);
+        setUnreadCount(typeof data.unreadCount === 'number' ? data.unreadCount : notifs.filter(n => !n.is_read).length);
+      }
     } catch (error) {
-      console.error('Error fetching notifications:', error);
+      console.warn('Could not refresh notifications:', error.message);
     }
   };
 
@@ -65,7 +86,7 @@ export default function NotificationDropdown() {
   };
 
   return (
-    <div className="relative">
+    <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="relative p-2 hover:bg-gray-100 rounded-xl transition-all"

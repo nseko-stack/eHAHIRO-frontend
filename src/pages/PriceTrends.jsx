@@ -43,16 +43,19 @@ export default function PriceTrends() {
             days
           }
         });
+        
+        const historyData = Array.isArray(data) ? data : [];
         // Transform data for chart
-        const chartData = data.map(p => ({
-          date: new Date(p.date).toLocaleDateString(),
-          price: p.price,
-          crop: p.crop_name,
-          market: p.market_name
+        const chartData = historyData.map(p => ({
+          date: p.date ? new Date(p.date).toLocaleDateString('en-RW', { month: 'short', day: 'numeric' }) : 'N/A',
+          price: typeof p.price === 'number' ? p.price : parseFloat(p.price) || 0,
+          crop: p.crop_name || '',
+          market: p.market_name || ''
         }));
         setPrices(chartData);
       } catch (error) {
         console.error('Error fetching prices:', error);
+        setPrices([]);
       } finally {
         setLoading(false);
       }
@@ -60,8 +63,8 @@ export default function PriceTrends() {
     fetchPrices();
   }, [selectedCrop, selectedMarket, days]);
 
-  const getCropName = () => crops.find(c => c.id == selectedCrop)?.name || '';
-  const getMarketName = () => markets.find(m => m.id == selectedMarket)?.name || '';
+  const getCropName = () => crops.find(c => String(c.id) === String(selectedCrop))?.name || 'Crop';
+  const getMarketName = () => markets.find(m => String(m.id) === String(selectedMarket))?.name || 'Market';
 
   return (
     <div className="space-y-8">
@@ -156,19 +159,19 @@ export default function PriceTrends() {
                   angle={-45}
                   textAnchor="end"
                   height={80}
-                  interval={Math.floor(prices.length / 7)}
+                  interval={prices.length > 10 ? Math.floor(prices.length / 6) : 0}
                 />
                 <YAxis label={{ value: 'Price (RWF/kg)', angle: -90, position: 'insideLeft' }} />
-                <Tooltip formatter={(value) => `RWF ${value}`} />
+                <Tooltip formatter={(value) => `RWF ${Number(value).toLocaleString()}`} />
                 <Legend />
                 <Line 
                   type="monotone" 
                   dataKey="price" 
-                  stroke="#3b82f6" 
-                  strokeWidth={2}
-                  dot={{ r: 4 }}
-                  activeDot={{ r: 6 }}
-                  name="Price"
+                  stroke="#10b981" 
+                  strokeWidth={3}
+                  dot={{ r: 4, fill: '#10b981' }}
+                  activeDot={{ r: 7 }}
+                  name="Price (RWF/kg)"
                 />
               </LineChart>
             ) : (
@@ -179,12 +182,12 @@ export default function PriceTrends() {
                   angle={-45}
                   textAnchor="end"
                   height={80}
-                  interval={Math.floor(prices.length / 7)}
+                  interval={prices.length > 10 ? Math.floor(prices.length / 6) : 0}
                 />
                 <YAxis label={{ value: 'Price (RWF/kg)', angle: -90, position: 'insideLeft' }} />
-                <Tooltip formatter={(value) => `RWF ${value}`} />
+                <Tooltip formatter={(value) => `RWF ${Number(value).toLocaleString()}`} />
                 <Legend />
-                <Bar dataKey="price" fill="#3b82f6" name="Price" />
+                <Bar dataKey="price" fill="#10b981" radius={[8, 8, 0, 0]} name="Price (RWF/kg)" />
               </BarChart>
             )}
           </ResponsiveContainer>
@@ -193,25 +196,25 @@ export default function PriceTrends() {
 
       {/* Statistics */}
       {prices.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatBox 
             title="Highest Price" 
-            value={`RWF ${Math.max(...prices.map(p => p.price))}/kg`}
+            value={`RWF ${Math.max(...prices.map(p => Number(p.price) || 0)).toLocaleString()}/kg`}
             color="emerald"
           />
           <StatBox 
             title="Lowest Price" 
-            value={`RWF ${Math.min(...prices.map(p => p.price))}/kg`}
+            value={`RWF ${Math.min(...prices.map(p => Number(p.price) || 0)).toLocaleString()}/kg`}
             color="red"
           />
           <StatBox 
             title="Average Price" 
-            value={`RWF ${Math.round(prices.reduce((a, b) => a + b.price, 0) / prices.length)}/kg`}
+            value={`RWF ${Math.round(prices.reduce((a, b) => a + (Number(b.price) || 0), 0) / prices.length).toLocaleString()}/kg`}
             color="blue"
           />
           <StatBox 
-            title="Price Change" 
-            value={prices.length > 1 ? `${((prices[prices.length - 1].price - prices[0].price) / prices[0].price * 100).toFixed(1)}%` : 'N/A'}
+            title="Period Change" 
+            value={prices.length > 1 && prices[0].price > 0 ? `${(((prices[prices.length - 1].price - prices[0].price) / prices[0].price) * 100).toFixed(1)}%` : '0.0%'}
             color="purple"
           />
         </div>

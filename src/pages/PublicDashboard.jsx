@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { api } from '../services/api';
 import PriceCard from '../components/PriceCard';
 import WeatherWidget from '../components/WeatherWidget';
-import { RefreshCw, TrendingUp, LogIn, UserPlus, Smartphone, BarChart3 } from 'lucide-react';
+import { RefreshCw, TrendingUp, LogIn, UserPlus, Smartphone, BarChart3, ShieldCheck } from 'lucide-react';
 
 export default function PublicDashboard() {
   const [prices, setPrices] = useState([]);
@@ -13,7 +13,7 @@ export default function PublicDashboard() {
     setLoading(true);
     try {
       const { data } = await api.get('/prices/today');
-      setPrices(data);
+      setPrices(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Error fetching prices:', error);
     } finally {
@@ -26,35 +26,37 @@ export default function PublicDashboard() {
   }, []);
 
   return (
-    <>
+    <div className="space-y-12">
       {/* HERO SECTION */}
-      <div className="text-center mb-12 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-3xl p-12 shadow-xl">
-        <div className="flex flex-col items-center space-y-4 mb-8">
+      <div className="text-center bg-gradient-to-br from-emerald-600 via-green-600 to-emerald-700 text-white rounded-3xl p-8 sm:p-12 shadow-2xl relative overflow-hidden">
+        <div className="relative z-10 max-w-3xl mx-auto flex flex-col items-center">
           <img 
             src="/eHAHIRO-logo.png" 
             alt="eHAHIRO AgriPrice" 
-            className="h-32 w-auto mx-auto drop-shadow-2xl" 
+            className="h-28 sm:h-32 w-auto mb-4 drop-shadow-lg" 
           />
-          <span className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">AgriPrice</span>
-        </div>
-        <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
-          Real-time crop prices across Rwanda. Stay informed, make better decisions.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link
-            to="/register"
-            className="inline-flex items-center px-8 py-4 bg-white text-green-600 font-bold rounded-2xl hover:bg-gray-100 transition-all shadow-lg"
-          >
-            <UserPlus size={24} className="mr-2" />
-            Get Started
-          </Link>
-          <Link
-            to="/login"
-            className="inline-flex items-center px-8 py-4 bg-green-700 text-white font-bold rounded-2xl hover:bg-green-800 transition-all shadow-lg"
-          >
-            <LogIn size={24} className="mr-2" />
-            Login
-          </Link>
+          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4 text-white">
+            Rwanda Agricultural Market Tracker
+          </h1>
+          <p className="text-base sm:text-xl text-emerald-50 mb-8 max-w-2xl">
+            Real-time crop prices, weather insights, and market trends across Rwanda. Stay ahead and make informed trade decisions.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto justify-center">
+            <Link
+              to="/register"
+              className="inline-flex items-center justify-center px-8 py-4 bg-white text-emerald-800 font-bold rounded-2xl hover:bg-emerald-50 transition-all shadow-lg hover:shadow-xl text-base"
+            >
+              <UserPlus size={20} className="mr-2" />
+              Get Started Free
+            </Link>
+            <Link
+              to="/login"
+              className="inline-flex items-center justify-center px-8 py-4 bg-emerald-800/80 text-white font-bold rounded-2xl hover:bg-emerald-900 transition-all border border-emerald-400/40 shadow-lg text-base"
+            >
+              <LogIn size={20} className="mr-2" />
+              Sign In
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -153,6 +155,6 @@ export default function PublicDashboard() {
           </Link>
         </div>
       </div>
-    </>
+    </div>
   );
 }

@@ -23,9 +23,9 @@ export default function Subscriptions() {
           api.get('/crops'),
           api.get('/markets')
         ]);
-        setSubscriptions(subsData);
-        setCrops(cropsData);
-        setMarkets(marketsData);
+        setSubscriptions(Array.isArray(subsData) ? subsData : subsData?.subscriptions || []);
+        setCrops(Array.isArray(cropsData) ? cropsData : []);
+        setMarkets(Array.isArray(marketsData) ? marketsData : []);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -38,7 +38,7 @@ export default function Subscriptions() {
   const handleAddSubscription = async (e) => {
     e.preventDefault();
     if (!newCropId || !newMarketId) {
-      setMessage('❌ Please select both crop and market');
+      setMessage('❌ Please select both a crop and a market');
       return;
     }
 
@@ -47,35 +47,47 @@ export default function Subscriptions() {
         crop_id: newCropId,
         market_id: newMarketId
       });
-      setMessage('✅ Subscription added! You will receive alerts for this crop/market.');
+      setMessage('✅ Subscription added! You will receive instant alerts for this crop/market.');
       setNewCropId('');
       setNewMarketId('');
       
       // Refresh subscriptions
       const { data } = await api.get('/subscriptions');
-      setSubscriptions(data);
+      setSubscriptions(Array.isArray(data) ? data : data?.subscriptions || []);
     } catch (error) {
       setMessage('❌ ' + (error.response?.data?.error || error.message));
     }
   };
 
   const handleDeleteSubscription = async (subscriptionId) => {
-    if (!confirm('Remove this subscription?')) return;
+    if (!window.confirm('Remove this subscription?')) return;
 
     try {
       await api.delete(`/subscriptions/${subscriptionId}`);
       setMessage('✅ Subscription removed');
-      setSubscriptions(subscriptions.filter(s => s.id !== subscriptionId));
+      setSubscriptions(subscriptions.filter(s => String(s.id) !== String(subscriptionId)));
     } catch (error) {
       setMessage('❌ ' + (error.response?.data?.error || error.message));
     }
   };
 
-  const getCropName = (cropId) => crops.find(c => c.id == cropId)?.name || 'Unknown';
-  const getMarketName = (marketId) => markets.find(m => m.id == marketId)?.name || 'Unknown';
+  const getCropName = (cropId) => crops.find(c => String(c.id) === String(cropId))?.name || 'Crop';
+  const getMarket = (marketId) => markets.find(m => String(m.id) === String(marketId));
+  const getMarketName = (marketId) => getMarket(marketId)?.name || 'Market';
+  const getMarketLocation = (marketId, fallbackLoc) => getMarket(marketId)?.location || fallbackLoc || 'Rwanda';
 
   if (loading) {
-    return <div className="p-6">Loading...</div>;
+    return (
+      <div className="space-y-6">
+        <div className="h-28 bg-pink-100/60 rounded-3xl animate-pulse"></div>
+        <div className="h-44 bg-white rounded-3xl animate-pulse shadow"></div>
+        <div className="grid md:grid-cols-3 gap-6">
+          <div className="h-48 bg-pink-50 rounded-2xl animate-pulse"></div>
+          <div className="h-48 bg-pink-50 rounded-2xl animate-pulse"></div>
+          <div className="h-48 bg-pink-50 rounded-2xl animate-pulse"></div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -165,7 +177,7 @@ export default function Subscriptions() {
                   <div>
                     <h3 className="text-xl font-bold text-gray-900">{getCropName(sub.crop_id)}</h3>
                     <p className="text-gray-600 font-semibold">{getMarketName(sub.market_id)}</p>
-                    <p className="text-sm text-gray-500 mt-2">📍 {sub.location}</p>
+                    <p className="text-sm text-gray-500 mt-2">📍 {getMarketLocation(sub.market_id, sub.location)}</p>
                   </div>
                   <Heart className="text-pink-600" size={24} fill="currentColor" />
                 </div>

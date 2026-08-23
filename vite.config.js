@@ -17,9 +17,13 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          if (id && id.includes('react')) return 'vendor';
-          if (id && id.includes('recharts')) return 'recharts';
-          if (id && id.includes('react-router-dom')) return 'router';
+          if (id.includes('node_modules')) {
+            if (id.includes('recharts')) return 'recharts';
+            if (id.includes('react-router') || id.includes('@remix-run')) return 'router';
+            if (id.includes('react') || id.includes('scheduler')) return 'vendor';
+            if (id.includes('lucide-react')) return 'icons';
+            if (id.includes('axios') || id.includes('socket.io-client')) return 'network';
+          }
         }
       }
     }
