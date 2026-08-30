@@ -323,17 +323,17 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="p-6 space-y-8">
+    <div className="space-y-6 sm:space-y-8">
 
       {/* HEADER */}
-      <div className="bg-gradient-to-r from-emerald-600 to-green-600 text-white rounded-3xl p-8 shadow-xl flex justify-between items-center">
+      <div className="bg-gradient-to-r from-emerald-600 to-green-600 text-white rounded-3xl p-5 sm:p-8 shadow-xl flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold">Admin Dashboard</h1>
           <p>Manage users, prices & SMS alerts</p>
         </div>
         <button
           onClick={handleSendBulkSMS}
-          className="bg-white text-emerald-600 px-6 py-3 rounded-xl font-semibold"
+          className="w-full sm:w-auto bg-white text-emerald-600 px-6 py-3 rounded-xl font-semibold"
         >
           Send Bulk SMS
         </button>
@@ -349,12 +349,12 @@ export default function AdminDashboard() {
       </div>
 
       {/* TABS */}
-      <div className="flex gap-4 flex-wrap">
+      <div className="flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible">
         {['overview', 'users', 'crops', 'markets', 'prices', 'notifications'].map(tab => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 rounded-xl ${
+            className={`shrink-0 px-4 py-2 rounded-xl ${
               activeTab === tab ? 'bg-emerald-600 text-white' : 'bg-gray-200'
             }`}
           >
@@ -431,8 +431,8 @@ export default function AdminDashboard() {
           )}
 
           {/* TABLE */}
-          <div className="bg-white shadow rounded-xl overflow-hidden">
-            <table className="w-full">
+          <div className="bg-white shadow rounded-xl overflow-x-auto">
+            <table className="w-full min-w-[700px]">
               <thead className="bg-gray-100">
                 <tr>
                   <th className="p-4">Name</th>
@@ -484,7 +484,7 @@ export default function AdminDashboard() {
           <div className="bg-white p-6 rounded-xl shadow">
             <h2 className="text-xl font-bold mb-4">Welcome Admin 👋</h2>
             <p className="mb-4">This dashboard allows you to manage users, crops, markets, monitor prices, and send SMS alerts.</p>
-            <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
               <div className="bg-green-50 p-3 rounded-lg">
                 <p className="font-semibold text-green-700">Quick Actions</p>
                 <ul className="mt-2 space-y-1 text-green-600">
@@ -582,11 +582,11 @@ export default function AdminDashboard() {
             </form>
           )}
 
-          <div className="bg-white shadow rounded-xl overflow-hidden">
+          <div className="bg-white shadow rounded-xl overflow-x-auto">
             {crops.length === 0 ? (
               <p className="p-4 text-gray-500">No crops found. Add one to get started.</p>
             ) : (
-              <table className="w-full">
+              <table className="w-full min-w-[480px]">
                 <thead className="bg-gray-100">
                   <tr>
                     <th className="p-4">Crop Name</th>
@@ -658,11 +658,11 @@ export default function AdminDashboard() {
             </form>
           )}
 
-          <div className="bg-white shadow rounded-xl overflow-hidden">
+          <div className="bg-white shadow rounded-xl overflow-x-auto">
             {markets.length === 0 ? (
               <p className="p-4 text-gray-500">No markets found. Add one to get started.</p>
             ) : (
-              <table className="w-full">
+              <table className="w-full min-w-[480px]">
                 <thead className="bg-gray-100">
                   <tr>
                     <th className="p-4">Market Name</th>
@@ -711,11 +711,11 @@ export default function AdminDashboard() {
           />
 
           {/* TABLE */}
-          <div className="bg-white shadow rounded-xl overflow-hidden">
+          <div className="bg-white shadow rounded-xl overflow-x-auto">
             {prices.length === 0 ? (
               <p className="p-4 text-gray-500">No prices found.</p>
             ) : (
-              <table className="w-full">
+              <table className="w-full min-w-[700px]">
                 <thead className="bg-gray-100">
                   <tr>
                     <th className="p-4">Crop</th>
@@ -770,7 +770,7 @@ export default function AdminDashboard() {
         <>
           {/* FILTERS */}
           <div className="bg-white p-4 rounded-xl shadow mb-4">
-            <div className="flex gap-4">
+            <div className="flex flex-col gap-4 sm:flex-row">
               <select
                 value={notificationFilters.type}
                 onChange={(e) => setNotificationFilters({...notificationFilters, type: e.target.value})}
@@ -792,11 +792,11 @@ export default function AdminDashboard() {
           </div>
 
           {/* TABLE */}
-          <div className="bg-white shadow rounded-xl overflow-hidden">
+          <div className="bg-white shadow rounded-xl overflow-x-auto">
             {notifications.length === 0 ? (
               <p className="p-4 text-gray-500">No notifications found.</p>
             ) : (
-              <table className="w-full">
+              <table className="w-full min-w-[700px]">
                 <thead className="bg-gray-100">
                   <tr>
                     <th className="p-4">User</th>

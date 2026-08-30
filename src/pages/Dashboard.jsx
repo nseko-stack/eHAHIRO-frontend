@@ -58,7 +58,7 @@ export default function Dashboard() {
     <div className="space-y-8">
       {/* Header Banner */}
       <div className="text-center py-6">
-        <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-emerald-600 to-green-700 bg-clip-text text-transparent mb-3">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-emerald-600 to-green-700 bg-clip-text text-transparent mb-3">
           Today's Crop Prices
         </h1>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
@@ -72,12 +72,12 @@ export default function Dashboard() {
       </div>
 
       {/* Actions Bar */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-2xl font-bold text-gray-900">Live Market Rates</h2>
         <button
           onClick={fetchPrices}
           disabled={loading}
-          className="flex items-center space-x-2 px-5 py-2.5 bg-white rounded-2xl shadow-md border border-emerald-100 hover:shadow-lg hover:border-emerald-300 transition-all duration-200 disabled:opacity-50 text-sm font-semibold text-emerald-800"
+          className="flex w-full items-center justify-center space-x-2 px-5 py-2.5 bg-white rounded-2xl shadow-md border border-emerald-100 hover:shadow-lg hover:border-emerald-300 transition-all duration-200 disabled:opacity-50 text-sm font-semibold text-emerald-800 sm:w-auto"
         >
           <RefreshCw size={16} className={`transition-transform ${loading ? 'animate-spin' : ''}`} />
           <span>Refresh Prices</span>
@@ -112,4 +112,4 @@ export default function Dashboard() {
       )}
     </div>
   );
-}
+}

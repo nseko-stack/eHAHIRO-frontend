@@ -93,10 +93,10 @@ export default function AgentDashboard() {
   return (
     <div className="space-y-8">
       {/* Add Price Form */}
-      <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-emerald-200">
-        <div className="flex items-center justify-center gap-2 mb-6">
+      <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-5 sm:p-8 shadow-2xl border border-emerald-200">
+        <div className="flex flex-col text-center sm:flex-row sm:items-center sm:justify-center gap-2 mb-6">
           <Plus size={32} className="text-emerald-600" />
-          <h2 className="text-3xl font-bold text-gray-900">Add New Price Update</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Add New Price Update</h2>
         </div>
         
         {message && (
@@ -157,7 +157,7 @@ export default function AgentDashboard() {
             <button
               type="submit"
               disabled={loading}
-              className="px-12 py-4 text-xl font-bold shadow-2xl hover:shadow-3xl bg-gradient-to-r from-emerald-600 to-green-600 text-white rounded-2xl disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-6 sm:px-12 py-4 text-base sm:text-xl font-bold shadow-2xl hover:shadow-3xl bg-gradient-to-r from-emerald-600 to-green-600 text-white rounded-2xl disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
             >
               {loading ? <Loader2 size={20} className="animate-spin" /> : <Plus size={20} />}
               <span>{loading ? 'Adding...' : 'Add Price & Send Alerts'}</span>
@@ -167,12 +167,12 @@ export default function AgentDashboard() {
       </div>
 
       {/* Bulk Upload Section */}
-      <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-blue-200">
+      <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-5 sm:p-8 shadow-2xl border border-blue-200">
         <BulkUpload onSuccess={fetchMyPrices} />
       </div>
 
       {/* My Recent Prices */}
-      <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-emerald-200">
+      <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-5 sm:p-8 shadow-2xl border border-emerald-200">
         <div className="flex items-center gap-3 mb-6">
           <List size={28} />
           <h3 className="text-2xl font-bold text-gray-900">Your Recent Updates</h3>
@@ -182,13 +182,13 @@ export default function AgentDashboard() {
         ) : (
           <div className="space-y-4">
             {myPrices.map((price) => (
-              <div key={price.id} className="flex items-center justify-between p-4 bg-emerald-50 rounded-xl border-l-4 border-emerald-400">
-                <div className="flex items-center space-x-4">
+              <div key={price.id} className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between p-4 bg-emerald-50 rounded-xl border-l-4 border-emerald-400">
+                <div className="flex items-center space-x-3 sm:space-x-4 min-w-0">
                   <div className="w-12 h-12 bg-emerald-200 rounded-xl flex items-center justify-center">
                     <span className="font-bold text-emerald-700 text-lg">{(price.crop_name || 'CRP').slice(0,3).toUpperCase()}</span>
                   </div>
-                  <div>
-                    <p className="font-semibold text-lg">{price.crop_name} @ {price.market_name}</p>
+                  <div className="min-w-0">
+                    <p className="font-semibold text-base sm:text-lg break-words">{price.crop_name} @ {price.market_name}</p>
                     {editingId === price.id ? (
                       <div className="flex gap-2 mt-2">
                         <input
@@ -207,7 +207,7 @@ export default function AgentDashboard() {
                     )}
                   </div>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 self-end sm:self-auto">
                   <button
                     onClick={() => {
                       setEditingId(price.id);

@@ -17,7 +17,7 @@ function AppContent() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50">
       <Navbar />
-      <main className="container mx-auto px-4 py-8 max-w-6xl">
+      <main className="container mx-auto max-w-6xl px-4 py-5 sm:px-6 sm:py-8">
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />

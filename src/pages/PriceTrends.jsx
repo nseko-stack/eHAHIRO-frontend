@@ -69,10 +69,10 @@ export default function PriceTrends() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-3xl p-8 shadow-xl">
+      <div className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-3xl p-5 sm:p-8 shadow-xl">
         <div className="flex items-center gap-3 mb-2">
           <TrendingUp size={32} />
-          <h1 className="text-4xl font-bold">Price Trends</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold">Price Trends</h1>
         </div>
         <p>Track crop prices over time and identify market trends</p>
       </div>
@@ -136,8 +136,8 @@ export default function PriceTrends() {
       </div>
 
       {/* Chart */}
-      <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-xl border border-blue-200">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">
+      <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-5 sm:p-8 shadow-xl border border-blue-200">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 break-words">
           {getCropName()} @ {getMarketName()} - Last {days} Days
         </h2>
         
@@ -150,9 +150,9 @@ export default function PriceTrends() {
             <p className="text-gray-500">No price data available for this period</p>
           </div>
         ) : (
-          <ResponsiveContainer width="100%" height={400}>
+          <ResponsiveContainer width="100%" height={320}>
             {chartType === 'line' ? (
-              <LineChart data={prices} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
+              <LineChart data={prices} margin={{ top: 5, right: 8, left: -20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis 
                   dataKey="date" 
@@ -161,7 +161,7 @@ export default function PriceTrends() {
                   height={80}
                   interval={prices.length > 10 ? Math.floor(prices.length / 6) : 0}
                 />
-                <YAxis label={{ value: 'Price (RWF/kg)', angle: -90, position: 'insideLeft' }} />
+                <YAxis width={55} />
                 <Tooltip formatter={(value) => `RWF ${Number(value).toLocaleString()}`} />
                 <Legend />
                 <Line 
@@ -175,7 +175,7 @@ export default function PriceTrends() {
                 />
               </LineChart>
             ) : (
-              <BarChart data={prices} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
+              <BarChart data={prices} margin={{ top: 5, right: 8, left: -20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis 
                   dataKey="date" 
@@ -184,7 +184,7 @@ export default function PriceTrends() {
                   height={80}
                   interval={prices.length > 10 ? Math.floor(prices.length / 6) : 0}
                 />
-                <YAxis label={{ value: 'Price (RWF/kg)', angle: -90, position: 'insideLeft' }} />
+                <YAxis width={55} />
                 <Tooltip formatter={(value) => `RWF ${Number(value).toLocaleString()}`} />
                 <Legend />
                 <Bar dataKey="price" fill="#10b981" radius={[8, 8, 0, 0]} name="Price (RWF/kg)" />

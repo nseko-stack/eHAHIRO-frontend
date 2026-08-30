@@ -74,7 +74,7 @@ export default function WeatherWidget({ marketLocation = 'Kigali' }) {
 
   if (!weather || !weather.main) {
     return (
-      <div className="bg-white/80 backdrop-blur-xl p-6 rounded-3xl shadow-xl border border-green-100 flex items-center justify-between">
+      <div className="bg-white/80 backdrop-blur-xl p-4 sm:p-6 rounded-3xl shadow-xl border border-green-100 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center space-x-3">
           <Cloud className="w-6 h-6 text-green-600" />
           <div>
@@ -98,7 +98,7 @@ export default function WeatherWidget({ marketLocation = 'Kigali' }) {
 
   return (
     <div className="bg-white/90 backdrop-blur-xl p-6 rounded-3xl shadow-xl border border-green-100 hover:shadow-2xl transition-all duration-300">
-      <div className="flex items-center justify-between mb-5">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-5">
         <div className="flex items-center space-x-3">
           <div className="p-3 bg-gradient-to-br from-green-50 to-emerald-100 rounded-2xl">
             {getWeatherIcon(condition)}
@@ -111,8 +111,8 @@ export default function WeatherWidget({ marketLocation = 'Kigali' }) {
             <p className="text-xs text-gray-500 capitalize">{description}</p>
           </div>
         </div>
-        <div className="text-right">
-          <div className="flex items-center justify-end space-x-1">
+        <div className="text-left sm:text-right">
+          <div className="flex items-center sm:justify-end space-x-1">
             <Thermometer className="w-5 h-5 text-amber-500" />
             <span className="font-extrabold text-2xl text-gray-900">{temp}°C</span>
           </div>
@@ -149,4 +149,4 @@ export default function WeatherWidget({ marketLocation = 'Kigali' }) {
       </div>
     </div>
   );
-}
+}

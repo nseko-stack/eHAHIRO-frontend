@@ -25,7 +25,7 @@ export default function Navbar() {
         <div className="container mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2.5">
             <img src="/eHAHIRO-logo.png" alt="eHAHIRO AgriPrice" className="h-10 w-auto flex-shrink-0" />
-            <span className="text-xl font-extrabold bg-gradient-to-r from-emerald-600 to-green-700 bg-clip-text text-transparent">
+            <span className="hidden text-xl font-extrabold bg-gradient-to-r from-emerald-600 to-green-700 bg-clip-text text-transparent sm:inline">
               AgriPrice
             </span>
           </Link>
@@ -33,17 +33,17 @@ export default function Navbar() {
           <div className="flex items-center space-x-3">
             <Link
               to="/login"
-              className="px-4 py-2 bg-emerald-50 text-emerald-800 rounded-xl text-sm font-semibold hover:bg-emerald-100 transition-all flex items-center space-x-1"
+              className="px-3 py-2 bg-emerald-50 text-emerald-800 rounded-xl text-sm font-semibold hover:bg-emerald-100 transition-all flex items-center space-x-1 sm:px-4"
             >
               <LogIn size={16} />
-              <span>Login</span>
+              <span className="hidden sm:inline">Login</span>
             </Link>
             <Link
               to="/register"
-              className="px-4 py-2 bg-gradient-to-r from-emerald-600 to-green-600 text-white rounded-xl text-sm font-semibold hover:shadow-lg transition-all flex items-center space-x-1"
+              className="px-3 py-2 bg-gradient-to-r from-emerald-600 to-green-600 text-white rounded-xl text-sm font-semibold hover:shadow-lg transition-all flex items-center space-x-1 sm:px-4"
             >
               <UserPlus size={16} />
-              <span>Register</span>
+              <span className="hidden sm:inline">Register</span>
             </Link>
           </div>
         </div>

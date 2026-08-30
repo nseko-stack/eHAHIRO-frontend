@@ -89,12 +89,12 @@ export default function PublicDashboard() {
 
       {/* TODAY'S PRICES */}
       <div className="mb-8">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-3xl font-bold text-gray-900">Today's Market Prices</h2>
+        <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Today's Market Prices</h2>
           <button
             onClick={fetchPrices}
             disabled={loading}
-            className="flex items-center space-x-2 px-6 py-3 bg-white rounded-2xl shadow-lg border border-gray-200 hover:shadow-xl hover:border-green-300 transition-all duration-300 disabled:opacity-50"
+            className="flex w-full items-center justify-center space-x-2 px-6 py-3 bg-white rounded-2xl shadow-lg border border-gray-200 hover:shadow-xl hover:border-green-300 transition-all duration-300 disabled:opacity-50 sm:w-auto"
           >
             <RefreshCw size={20} className={`transition-transform ${loading ? 'animate-spin' : ''}`} />
             <span className="font-semibold">Refresh</span>
@@ -132,23 +132,23 @@ export default function PublicDashboard() {
       </div>
 
       {/* CALL TO ACTION */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-3xl p-12 text-center shadow-xl">
-        <h2 className="text-4xl font-bold mb-4">Join the AgriPrice Community</h2>
-        <p className="text-xl mb-8 max-w-2xl mx-auto">
+      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-3xl p-6 sm:p-12 text-center shadow-xl">
+        <h2 className="text-3xl sm:text-4xl font-bold mb-4">Join the AgriPrice Community</h2>
+        <p className="text-base sm:text-xl mb-8 max-w-2xl mx-auto">
           Whether you're a farmer, trader, agent, or just interested in agricultural markets,
           join thousands using AgriPrice to make better decisions.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
             to="/register"
-            className="inline-flex items-center px-8 py-4 bg-white text-blue-600 font-bold rounded-2xl hover:bg-gray-100 transition-all shadow-lg"
+            className="inline-flex w-full justify-center items-center px-8 py-4 bg-white text-blue-600 font-bold rounded-2xl hover:bg-gray-100 transition-all shadow-lg sm:w-auto"
           >
             <UserPlus size={24} className="mr-2" />
             Register Now
           </Link>
           <Link
             to="/login"
-            className="inline-flex items-center px-8 py-4 bg-blue-700 text-white font-bold rounded-2xl hover:bg-blue-800 transition-all shadow-lg"
+            className="inline-flex w-full justify-center items-center px-8 py-4 bg-blue-700 text-white font-bold rounded-2xl hover:bg-blue-800 transition-all shadow-lg sm:w-auto"
           >
             <LogIn size={24} className="mr-2" />
             Sign In

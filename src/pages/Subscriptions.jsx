@@ -93,10 +93,10 @@ export default function Subscriptions() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="bg-gradient-to-r from-pink-600 to-rose-600 text-white rounded-3xl p-8 shadow-xl">
+      <div className="bg-gradient-to-r from-pink-600 to-rose-600 text-white rounded-3xl p-5 sm:p-8 shadow-xl">
         <div className="flex items-center gap-3 mb-2">
           <Heart size={32} />
-          <h1 className="text-4xl font-bold">My Subscriptions</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold">My Subscriptions</h1>
         </div>
         <p>Get alerts for specific crop prices at your favorite markets</p>
       </div>
@@ -111,7 +111,7 @@ export default function Subscriptions() {
       )}
 
       {/* Add Subscription Form */}
-      <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-xl border border-pink-200">
+      <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-5 sm:p-8 shadow-xl border border-pink-200">
         <div className="flex items-center gap-3 mb-6">
           <Plus size={28} />
           <h2 className="text-2xl font-bold text-gray-900">Add New Subscription</h2>
@@ -158,7 +158,7 @@ export default function Subscriptions() {
       </div>
 
       {/* Active Subscriptions */}
-      <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-xl border border-pink-200">
+      <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-5 sm:p-8 shadow-xl border border-pink-200">
         <h2 className="text-2xl font-bold text-gray-900 mb-6">
           Your Subscriptions ({subscriptions.length})
         </h2>
